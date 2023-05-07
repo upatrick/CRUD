@@ -35,3 +35,33 @@ app.post('/createAccount', (req, res) => {
     res.status(201).send(`The email ${newAccount.email} has been successfully added!`);
   });
 });
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send('Email and password are required!');
+    return;
+  }
+
+  const user = accounts.find((u) => u.email === email);
+
+  if (!user) {
+    res.status(401).send('Invalid data!');
+    return;
+  }
+
+  bcrypt.compare(password, user.password, (err, result) => {
+    if (err || !result) {
+      res.status(401).send('Invalid data!');
+      return;
+    }
+
+    // Senha válida, continuar com o processo de login
+    res.status(200).send('Login successful!');
+  });
+});
+
+app.get("/showUser", (req, res) => {
+    res.status(200).json(accounts)
+})
