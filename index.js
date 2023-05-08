@@ -102,3 +102,28 @@ app.get('/usuarios/:id/recados', (req, res) => {
   res.send(usuario.recados);
 });
 
+app.put('/usuarios/:id/recados/:recadoId', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const recadoId = parseInt(req.params.recadoId);
+  const { titulo, descricao } = req.body;
+
+  const usuario = accounts.find((u) => u.id === userId);
+
+  if (!usuario) {
+    res.status(404).send('User Message not found!');
+    return;
+  }
+
+  const recado = usuario.recados.find((r) => r.id === recadoId);
+
+  if (!recado) {
+    res.status(404).send('Message not found!');
+    return;
+  }
+
+  recado.titulo = titulo;
+  recado.descricao = descricao;
+
+  res.status(200).send(`The message with ID ${recadoId} was successfully updated!`);
+});
+
