@@ -127,3 +127,27 @@ app.put('/usuarios/:id/recados/:recadoId', (req, res) => {
   res.status(200).send(`The message with ID ${recadoId} was successfully updated!`);
 });
 
+app.delete('/usuarios/:id/recados/:recadoId', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const recadoId = parseInt(req.params.recadoId);
+
+  const usuario = accounts.find((u) => u.id === userId);
+
+  if (!usuario) {
+    res.status(404).send('User not found!');
+    return;
+  }
+
+  const recadoIndex = usuario.recados.findIndex((r) => r.id === recadoId);
+
+  if (recadoIndex === -1) {
+    res.status(404).send('Message not found!');
+    return;
+  }
+
+  usuario.recados.splice(recadoIndex, 1);
+
+  res.status(200).send(`The message with ID ${recadoId} was successfully deleted!`);
+});
+
+app.listen(5555, ()=> console.log("Server running!"))
