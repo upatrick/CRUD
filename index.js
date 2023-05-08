@@ -65,3 +65,40 @@ app.post('/login', (req, res) => {
 app.get("/showUser", (req, res) => {
     res.status(200).json(accounts)
 })
+
+app.post('/user/:id/recados', (req, res) => {
+  const id = parseInt(req.params.id);
+  const { titulo, descricao } = req.body;
+
+  const usuario = accounts.find((u) => u.id === id);
+
+  if (!usuario) {
+    res.status(404).send('User not found!');
+    return;
+  }
+
+  if (!titulo || !descricao) {
+    res.status(400).send('Title and description are required!');
+    return;
+  }
+
+  const novoId = usuario.recados.length + 1;
+  const novoRecado = { id: novoId, titulo, descricao };
+  usuario.recados.push(novoRecado);
+
+  res.status(201).send(`The message with title "${novoRecado.titulo}" was added to the user list.`);
+});
+  
+app.get('/usuarios/:id/recados', (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const usuario = accounts.find((u) => u.id === id);
+
+  if (!usuario) {  
+    res.status(404).send('User not found!');
+    return;
+  }
+
+  res.send(usuario.recados);
+});
+
